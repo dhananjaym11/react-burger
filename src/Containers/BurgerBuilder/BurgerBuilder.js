@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 import Burger from '../../Components/Burger/Burger';
 import BuildControls from '../../Components/Burger/BuildControls/BuildControls';
+import OrderSummary from '../../Components/Burger/OrderSummary/OrderSummary';
 
 const INGREDIENT_PRICES = {
     salad: 0.5,
@@ -18,7 +19,8 @@ class BurgerBuilder extends Component {
             cheese: 0,
             meat: 0
         },
-        totalPrice: 5
+        totalPrice: 5,
+        showModal: false
     }
 
     addIngredientHandler = (type) => {
@@ -47,6 +49,22 @@ class BurgerBuilder extends Component {
         }
     }
 
+    orderNowHandler = () => {
+        this.setState({
+            showModal: true
+        })
+    }
+
+    closeModalHandler = () => {
+        this.setState({
+            showModal: false
+        });
+    }
+
+    continueHandler = () => {
+        alert('Purchased');
+    }
+
     render() {
         return (
             <>
@@ -56,6 +74,14 @@ class BurgerBuilder extends Component {
                     ingredients={this.state.ingredients}
                     addIngredient={this.addIngredientHandler}
                     removeIngredient={this.removeIngredientHandler}
+                    orderNowHandler={this.orderNowHandler}
+                />
+                <OrderSummary
+                    ingredients={this.state.ingredients}
+                    totalPrice={this.state.totalPrice}
+                    showModal={this.state.showModal}
+                    closeModal={this.closeModalHandler}
+                    continueClicked={this.continueHandler}
                 />
             </>
         );
