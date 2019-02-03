@@ -3,7 +3,6 @@ import React from 'react';
 import classes from './Button.css';
 
 const Button = (props) => {
-    debugger
     return (
         <button
             className={[classes.Button, classes[props.btnType]].join(' ')}
