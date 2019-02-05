@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 
+import axios from '../../axios-orders';
 import Burger from '../../Components/Burger/Burger';
 import BuildControls from '../../Components/Burger/BuildControls/BuildControls';
 import OrderSummary from '../../Components/Burger/OrderSummary/OrderSummary';
+import Spinner from '../../Components/UI/Spinner/Spinner';
 
 const INGREDIENT_PRICES = {
     salad: 0.5,
@@ -20,7 +22,8 @@ class BurgerBuilder extends Component {
             meat: 0
         },
         totalPrice: 5,
-        showModal: false
+        showModal: false,
+        showLoader: false
     }
 
     addIngredientHandler = (type) => {
@@ -62,7 +65,38 @@ class BurgerBuilder extends Component {
     }
 
     continueHandler = () => {
-        alert('Purchased');
+        // alert('Purchased');
+        this.setState({
+            showModal: false,
+            showLoader: true
+        })
+        const orders = {
+            ingredients: this.state.ingredients,
+            price: this.state.totalPrice,
+            customer: {
+                name: 'djay',
+                address: {
+                    sreet: 'satara',
+                    zip: '415002',
+                    country: 'India'
+                },
+                email: 'djay@test.com',
+            },
+            deliveryMethod: 'fastest'
+        }
+        axios.post('/orders.json', orders)
+            .then(response => {
+                console.log(response);
+                this.setState({
+                    showLoader: false
+                })
+            })
+            .catch(error => {
+                console.log(error);
+                this.setState({
+                    showLoader: false
+                })
+            });
     }
 
     render() {
@@ -83,6 +117,9 @@ class BurgerBuilder extends Component {
                     closeModal={this.closeModalHandler}
                     continueClicked={this.continueHandler}
                 />
+                {this.state.showLoader ?
+                    <Spinner />
+                    : null}
             </>
         );
     }
