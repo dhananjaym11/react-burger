@@ -5,6 +5,7 @@ import Burger from '../../Components/Burger/Burger';
 import BuildControls from '../../Components/Burger/BuildControls/BuildControls';
 import OrderSummary from '../../Components/Burger/OrderSummary/OrderSummary';
 import Spinner from '../../Components/UI/Spinner/Spinner';
+import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
 
 const INGREDIENT_PRICES = {
     salad: 0.5,
@@ -15,15 +16,19 @@ const INGREDIENT_PRICES = {
 
 class BurgerBuilder extends Component {
     state = {
-        ingredients: {
-            salad: 0,
-            bacon: 0,
-            cheese: 0,
-            meat: 0
-        },
+        ingredients: null,
         totalPrice: 5,
         showModal: false,
         showLoader: false
+    }
+
+    componentDidMount() {
+        axios.get('/ingredients.json').then(response => {
+            this.setState({
+                ingredients: response.data
+            })
+        });
+
     }
 
     addIngredientHandler = (type) => {
@@ -100,16 +105,23 @@ class BurgerBuilder extends Component {
     }
 
     render() {
-        return (
-            <>
-                <Burger ingredients={this.state.ingredients} />
-                <BuildControls
-                    totalPrice={this.state.totalPrice}
-                    ingredients={this.state.ingredients}
-                    addIngredient={this.addIngredientHandler}
-                    removeIngredient={this.removeIngredientHandler}
-                    orderNowHandler={this.orderNowHandler}
-                />
+        let burger = <Spinner />;
+        let orderSummary = null;
+
+        if (this.state.ingredients) {
+            burger = (
+                <>
+                    <Burger ingredients={this.state.ingredients} />
+                    <BuildControls
+                        totalPrice={this.state.totalPrice}
+                        ingredients={this.state.ingredients}
+                        addIngredient={this.addIngredientHandler}
+                        removeIngredient={this.removeIngredientHandler}
+                        orderNowHandler={this.orderNowHandler}
+                    />
+                </>
+            );
+            orderSummary = (
                 <OrderSummary
                     ingredients={this.state.ingredients}
                     totalPrice={this.state.totalPrice}
@@ -117,6 +129,12 @@ class BurgerBuilder extends Component {
                     closeModal={this.closeModalHandler}
                     continueClicked={this.continueHandler}
                 />
+            )
+        }
+        return (
+            <>
+                {burger}
+                {orderSummary}
                 {this.state.showLoader ?
                     <Spinner />
                     : null}
@@ -125,4 +143,4 @@ class BurgerBuilder extends Component {
     }
 }
 
-export default BurgerBuilder;
+export default withErrorHandler(BurgerBuilder, axios);
