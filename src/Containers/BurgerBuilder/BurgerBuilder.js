@@ -89,19 +89,20 @@ class BurgerBuilder extends Component {
             },
             deliveryMethod: 'fastest'
         }
-        axios.post('/orders.json', orders)
-            .then(response => {
-                console.log(response);
-                this.setState({
-                    showLoader: false
-                })
-            })
-            .catch(error => {
-                console.log(error);
-                this.setState({
-                    showLoader: false
-                })
-            });
+        // axios.post('/orders.json', orders)
+        //     .then(response => {
+        //         console.log(response);
+        //         this.setState({
+        //             showLoader: false
+        //         })
+        //     })
+        //     .catch(error => {
+        //         console.log(error);
+        //         this.setState({
+        //             showLoader: false
+        //         })
+        //     });
+        this.props.history.push('/checkout');
     }
 
     render() {
