@@ -1,4 +1,4 @@
-const inputConfig = (elementType, type, placeholder, validation, valid) => {
+const inputConfig = (elementType, type, placeholder, validation, valid, touched) => {
     return {
         elementType: elementType,
         elementConfig: typeof type === 'object' ?
@@ -11,7 +11,8 @@ const inputConfig = (elementType, type, placeholder, validation, valid) => {
             },
         value: '',
         validation: validation ? validation : null,
-        valid: typeof valid === 'boolean' ? valid : null
+        valid: typeof valid === 'boolean' ? valid : true,
+        touched: touched
     }
 }
 

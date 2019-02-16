@@ -10,17 +10,18 @@ import inputConfig from './inputConfig';
 class ContactData extends Component {
     state = {
         orderForm: {
-            name: inputConfig('input', 'text', 'Enter Name', { required: true, maxLength: 20 }, false),
-            street: inputConfig('input', 'text', 'Enter Street', { required: true }, false),
-            zipCode: inputConfig('input', 'text', 'Enter Zipcode', { required: true, minLength: 5 }, false),
-            country: inputConfig('input', 'text', 'Enter Country', { required: true }, false),
-            email: inputConfig('input', 'email', 'Enter Email', { required: true }, false),
+            name: inputConfig('input', 'text', 'Enter Name', { required: true, maxLength: 20 }, false, false),
+            street: inputConfig('input', 'text', 'Enter Street', { required: true }, false, false),
+            zipCode: inputConfig('input', 'text', 'Enter Zipcode', { required: true, minLength: 5 }, false, false),
+            country: inputConfig('input', 'text', 'Enter Country', { required: true }, false, false),
+            email: inputConfig('input', 'email', 'Enter Email', { required: true }, false, false),
             deliveryMethod: inputConfig('select', [
                 { value: 'fastest', displayValue: 'Fastest' },
                 { value: 'cheapest', displayValue: 'Cheapest' }
             ], '')
         },
-        showLoader: false
+        showLoader: false,
+        formIsValid: false
     }
 
     orderHandler = () => {
@@ -73,13 +74,25 @@ class ContactData extends Component {
         const updatedOrderForm = { ...this.state.orderForm };
         const updatedFormElement = { ...updatedOrderForm[inputIdentifier] };
         updatedFormElement.value = e.target.value;
-        updatedFormElement.valid = this.checkValidity(updatedFormElement.value, updatedFormElement.validation);
-        console.log(updatedFormElement);
+        updatedFormElement.touched = true;
+        if (updatedFormElement.validation) {
+            updatedFormElement.valid = this.checkValidity(updatedFormElement.value, updatedFormElement.validation);
+        }
         updatedOrderForm[inputIdentifier] = updatedFormElement;
+        const formIsValid = this.checkFormIsInvalid(updatedOrderForm);
 
         this.setState({
-            orderForm: updatedOrderForm
+            orderForm: updatedOrderForm,
+            formIsValid: formIsValid
         })
+    }
+
+    checkFormIsInvalid = (form) => {
+        let isValid = true;
+        for (let key in form) {
+            isValid = form[key].valid && isValid
+        }
+        return isValid;
     }
 
 
@@ -101,9 +114,12 @@ class ContactData extends Component {
                             elementType={ele.config.elementType}
                             elementConfig={ele.config.elementConfig}
                             onChange={(e) => this.changeHandler(e, ele.id)}
+                            shouldValidate={ele.config.validation ? true : false}
+                            invalid={!ele.config.valid}
+                            touched={ele.config.touched}
                             value={ele.config.value} />
                     ))}
-                    <Button btnType="Success" clicked={this.orderHandler}>Order</Button>
+                    <Button btnType="Success" clicked={this.orderHandler} disabled={!this.state.formIsValid}>Order</Button>
                 </form>
                 {this.state.showLoader ?
                     <Spinner />
