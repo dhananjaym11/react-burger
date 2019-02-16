@@ -28,7 +28,6 @@ class BurgerBuilder extends Component {
                 ingredients: response.data
             })
         });
-
     }
 
     addIngredientHandler = (type) => {
