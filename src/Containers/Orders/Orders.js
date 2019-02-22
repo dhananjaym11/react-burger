@@ -23,7 +23,7 @@ class Orders extends Component {
             this.setState({
                 orders: orders
             })
-        }).catch((err) => console.log(err));
+        }).catch((err) => { });
     }
 
     render() {
