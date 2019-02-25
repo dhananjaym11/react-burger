@@ -7,7 +7,7 @@ import BuildControls from '../../Components/Burger/BuildControls/BuildControls';
 import OrderSummary from '../../Components/Burger/OrderSummary/OrderSummary';
 import Spinner from '../../Components/UI/Spinner/Spinner';
 import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
-import * as burderBuilderActions from '../../store/actions/index';
+import * as actions from '../../store/actions/index';
 
 class BurgerBuilder extends Component {
     state = {
@@ -89,10 +89,10 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onAddIngredient: (name) => dispatch(burderBuilderActions.addIngredient(name)),
-        onRemoveIngredient: (name) => dispatch(burderBuilderActions.removeIngredient(name)),
-        initIngredients: () => dispatch(burderBuilderActions.initIngredients()),
-        onInitPurchase: () => dispatch(burderBuilderActions.purchaseInit())
+        onAddIngredient: (name) => dispatch(actions.addIngredient(name)),
+        onRemoveIngredient: (name) => dispatch(actions.removeIngredient(name)),
+        initIngredients: () => dispatch(actions.initIngredients()),
+        onInitPurchase: () => dispatch(actions.purchaseInit())
     }
 }
 

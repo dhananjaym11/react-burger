@@ -8,11 +8,11 @@ import thunk from 'redux-thunk';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-import burderBuilderReducer from './store/reducer/burderBuilder';
+import burgerBuilderReducer from './store/reducer/burgerBuilder';
 import orderReducer from './store/reducer/order';
 
 const rootReducer = combineReducers({
-    burgerReducer: burderBuilderReducer,
+    burgerReducer: burgerBuilderReducer,
     ordReducer: orderReducer
 });
 
