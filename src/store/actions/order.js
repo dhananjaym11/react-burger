@@ -32,12 +32,46 @@ export const purchaseInit = () => {
 export const purchaseBurger = (orderData) => {
     return dispatch => {
         dispatch(purchaseBurgerStart());
-        axios.post('/order.json', orderData)
+        axios.post('/orders.json', orderData)
             .then(response => {
                 dispatch(purchaseBurgerSuccess(response.data.name, orderData));
             })
             .catch((err) => {
                 dispatch(purchaseBurgerFailed(err));
+            });
+    }
+}
+
+const fetchOrdersSuccess = (orderData) => {
+    return {
+        type: actionType.FETCH_ORDERS_SUCCESS,
+        orderData: orderData
+    }
+}
+
+const fetchOrdersFailed = (error) => {
+    return {
+        type: actionType.FETCH_ORDERS_FAILED,
+        error: error
+    }
+}
+
+const fetchOrderStart = () => {
+    return {
+        type: actionType.FETCH_ORDERS_START,
+        showLoader: true
+    }
+}
+
+export const fetchOrders = () => {
+    return dispatch => {
+        dispatch(fetchOrderStart());
+        axios.get('/orders.json')
+            .then(response => {
+                dispatch(fetchOrdersSuccess(response.data));
+            })
+            .catch((err) => {
+                dispatch(fetchOrdersFailed(err));
             });
     }
 }

@@ -34,6 +34,30 @@ const reducer = (state = initialState, action) => {
                 ...state,
                 showLoader: false
             };
+
+        case actionTypes.FETCH_ORDERS_START:
+            return {
+                ...state,
+                showLoader: true
+            }
+        case actionTypes.FETCH_ORDERS_SUCCESS:
+            const orders = [];
+            for (let key in action.orderData) {
+                orders.push({
+                    ...action.orderData[key],
+                    id: key
+                });
+            }
+            return {
+                ...state,
+                orders: orders,
+                showLoader: false
+            };
+        case actionTypes.FETCH_ORDERS_FAILED:
+            return {
+                ...state,
+                showLoader: false
+            };
         default:
             return state;
     }
