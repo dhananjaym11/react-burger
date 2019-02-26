@@ -9,6 +9,7 @@ import Input from '../UI/Input/Input';
 import inputConfig from './inputConfig';
 import * as orderActions from '../../store/actions/index';
 import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
+import { checkValidity, checkFormIsInvalid } from '../../config/utility';
 
 class ContactData extends Component {
     state = {
@@ -40,47 +41,22 @@ class ContactData extends Component {
         this.props.onPurchaseBurger(orders);
     }
 
-    checkValidity = (value, rules) => {
-        let isValid = true;
-
-        if (rules.required) {
-            isValid = value.trim() !== '' && isValid;
-        }
-        if (rules.minLength) {
-            isValid = value.length >= rules.minLength && isValid;
-        }
-        if (rules.maxLength) {
-            isValid = value.length <= rules.maxLength && isValid;
-        }
-
-        return isValid;
-    }
-
     changeHandler = (e, inputIdentifier) => {
         const updatedOrderForm = { ...this.state.orderForm };
         const updatedFormElement = { ...updatedOrderForm[inputIdentifier] };
         updatedFormElement.value = e.target.value;
         updatedFormElement.touched = true;
         if (updatedFormElement.validation) {
-            updatedFormElement.valid = this.checkValidity(updatedFormElement.value, updatedFormElement.validation);
+            updatedFormElement.valid = checkValidity(updatedFormElement.value, updatedFormElement.validation);
         }
         updatedOrderForm[inputIdentifier] = updatedFormElement;
-        const formIsValid = this.checkFormIsInvalid(updatedOrderForm);
+        const formIsValid = checkFormIsInvalid(updatedOrderForm);
 
         this.setState({
             orderForm: updatedOrderForm,
             formIsValid: formIsValid
         })
     }
-
-    checkFormIsInvalid = (form) => {
-        let isValid = true;
-        for (let key in form) {
-            isValid = form[key].valid && isValid
-        }
-        return isValid;
-    }
-
 
     render() {
         const formElements = [];
