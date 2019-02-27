@@ -17,7 +17,8 @@ class Auth extends Component {
             email: inputConfig('input', 'email', 'Enter Email', '', { required: true, isEmail: true }, false, false),
             password: inputConfig('input', 'password', 'Enter Password', '', { required: true, minLength: 6 }, false, false)
         },
-        formIsValid: false
+        formIsValid: false,
+        isSignup: true
     }
 
     changeHandler = (e, inputIdentifier) => {
@@ -42,9 +43,13 @@ class Auth extends Component {
         for (let indentifier in this.state.authForm) {
             formData[indentifier] = this.state.authForm[indentifier].value;
         }
-        debugger
+        this.props.onInitAuth(formData.email, formData.password, this.state.isSignup);
+    }
 
-        this.props.onInitAuth(formData.email, formData.password);
+    switchAuthHandler = () => {
+        this.setState(prevState => {
+            return { isSignup: !prevState.isSignup }
+        })
     }
 
     render() {
@@ -57,7 +62,9 @@ class Auth extends Component {
         }
         return (
             <div className={classes.Auth}>
-                <h4>Enter contact data</h4>
+                {this.props.error ?
+                    <p>{this.props.error.message} </p>
+                    : null}
                 <form>
                     {formElements.map((ele) => (
                         <Input
@@ -72,8 +79,10 @@ class Auth extends Component {
                     ))}
                     <Button btnType="Success" clicked={this.authHandler} disabled={!this.state.formIsValid}>Login</Button>
                 </form>
+                <Button btnType="Danger" clicked={this.switchAuthHandler}>Switch to {this.state.isSignup ? 'Signin' : 'Signup'}</Button>
 
                 {this.props.showLoader ? <Spinner /> : null}
+
             </div>
         )
     }
@@ -81,13 +90,14 @@ class Auth extends Component {
 
 const mapStateToProps = state => {
     return {
-        showLoader: state.authReducer.showLoader
+        showLoader: state.authReducer.showLoader,
+        error: state.authReducer.error
     }
 }
 
 const mapDispatchToProps = dispatch => {
     return {
-        onInitAuth: (email, password) => dispatch(actions.initAuth(email, password))
+        onInitAuth: (email, password, isSignup) => dispatch(actions.initAuth(email, password, isSignup))
     }
 }
 
