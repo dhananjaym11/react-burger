@@ -1,16 +1,21 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
 import classes from './Auth.css';
+import axios from '../../axios-orders';
+import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
 import inputConfig from '../../Components/ContactData/inputConfig';
 import Input from '../../Components/UI/Input/Input';
 import Button from '../../Components/UI/Button/Button';
+import Spinner from '../../Components/UI/Spinner/Spinner';
 import { checkValidity, checkFormIsInvalid } from '../../config/utility';
+import * as actions from '../../store/actions/auth';
 
 class Auth extends Component {
     state = {
         authForm: {
             email: inputConfig('input', 'email', 'Enter Email', '', { required: true, isEmail: true }, false, false),
-            password: inputConfig('input', 'password', 'Enter Password', '', { required: true, minLength: 7 }, false, false)
+            password: inputConfig('input', 'password', 'Enter Password', '', { required: true, minLength: 6 }, false, false)
         },
         formIsValid: false
     }
@@ -30,6 +35,16 @@ class Auth extends Component {
             authForm: updatedAuthForm,
             formIsValid: formIsValid
         })
+    }
+
+    authHandler = () => {
+        const formData = {};
+        for (let indentifier in this.state.authForm) {
+            formData[indentifier] = this.state.authForm[indentifier].value;
+        }
+        debugger
+
+        this.props.onInitAuth(formData.email, formData.password);
     }
 
     render() {
@@ -57,9 +72,23 @@ class Auth extends Component {
                     ))}
                     <Button btnType="Success" clicked={this.authHandler} disabled={!this.state.formIsValid}>Login</Button>
                 </form>
+
+                {this.props.showLoader ? <Spinner /> : null}
             </div>
         )
     }
 }
 
-export default Auth;
+const mapStateToProps = state => {
+    return {
+        showLoader: state.authReducer.showLoader
+    }
+}
+
+const mapDispatchToProps = dispatch => {
+    return {
+        onInitAuth: (email, password) => dispatch(actions.initAuth(email, password))
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(Auth, axios));
