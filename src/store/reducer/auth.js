@@ -18,6 +18,10 @@ const authSuccess = (state, action) => {
     return updateObject(state, data);
 }
 
+const authLogout = (state, action) => {
+    return updateObject(state, { token: null, userId: null });
+}
+
 const reducer = (state = initialState, action) => {
     switch (action.type) {
         case actionTypes.AUTH_START:
@@ -28,6 +32,9 @@ const reducer = (state = initialState, action) => {
 
         case actionTypes.AUTH_FAILED:
             return updateObject(state, { error: action.error, showLoader: false });
+
+        case actionTypes.AUTH_LOGOUT:
+            return authLogout(state, action);
 
         default:
             return state;
