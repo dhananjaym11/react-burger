@@ -2,11 +2,12 @@ import React, { Component } from 'react';
 import { Route, Switch } from 'react-router-dom';
 
 import './App.css';
-import Layout from './Components/Layout/Layout';
+import Layout from './hoc/Layout/Layout';
 import Orders from './Containers/Orders/Orders';
 import BurgerBuilder from './Containers/BurgerBuilder/BurgerBuilder';
 import Checkout from './Containers/Checkout/Checkout';
 import Auth from './Containers/Auth/Auth';
+import Logout from './Containers/Auth/Logout/Logout';
 
 class App extends Component {
   render() {
@@ -18,6 +19,7 @@ class App extends Component {
             <Route path="/orders" component={Orders} />
             <Route path="/" exact component={BurgerBuilder} />
             <Route path="/auth" exact component={Auth} />
+            <Route path="/logout" exact component={Logout} />
           </Switch>
         </Layout>
       </div>

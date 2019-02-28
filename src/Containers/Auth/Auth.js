@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
 
 import classes from './Auth.css';
 import axios from '../../axios-orders';
@@ -62,6 +63,7 @@ class Auth extends Component {
         }
         return (
             <div className={classes.Auth}>
+                {this.props.isAuthenticated ? <Redirect to="/" /> : null}
                 {this.props.error ?
                     <p>{this.props.error.message} </p>
                     : null}
@@ -91,7 +93,8 @@ class Auth extends Component {
 const mapStateToProps = state => {
     return {
         showLoader: state.authReducer.showLoader,
-        error: state.authReducer.error
+        error: state.authReducer.error,
+        isAuthenticated: state.authReducer.token !== null
     }
 }
 
