@@ -61,9 +61,17 @@ class Auth extends Component {
                 config: this.state.authForm[key]
             })
         }
+        let isAuthenticated = null;
+        if (this.props.isAuthenticated) {
+            if (this.props.totalPrice > 5) {
+                isAuthenticated = <Redirect to="/checkout" />
+            } else {
+                isAuthenticated = <Redirect to="/" />
+            }
+        }
         return (
             <div className={classes.Auth}>
-                {this.props.isAuthenticated ? <Redirect to="/" /> : null}
+                {isAuthenticated}
                 {this.props.error ?
                     <p>{this.props.error.message} </p>
                     : null}
@@ -94,7 +102,8 @@ const mapStateToProps = state => {
     return {
         showLoader: state.authReducer.showLoader,
         error: state.authReducer.error,
-        isAuthenticated: state.authReducer.token !== null
+        isAuthenticated: state.authReducer.token !== null,
+        totalPrice: state.burgerReducer.totalPrice
     }
 }
 
