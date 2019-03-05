@@ -9,8 +9,8 @@ import inputConfig from '../../Components/ContactData/inputConfig';
 import Input from '../../Components/UI/Input/Input';
 import Button from '../../Components/UI/Button/Button';
 import Spinner from '../../Components/UI/Spinner/Spinner';
-import { checkValidity, checkFormIsInvalid } from '../../config/utility';
-import * as actions from '../../store/actions/auth';
+import { checkValidity, checkFormIsInvalid, updateObject } from '../../config/utility';
+import * as actions from '../../store/actions';
 
 class Auth extends Component {
     state = {
@@ -23,14 +23,16 @@ class Auth extends Component {
     }
 
     changeHandler = (e, inputIdentifier) => {
-        const updatedAuthForm = { ...this.state.authForm };
-        const updatedFormElement = { ...updatedAuthForm[inputIdentifier] };
-        updatedFormElement.value = e.target.value;
-        updatedFormElement.touched = true;
-        if (updatedFormElement.validation) {
-            updatedFormElement.valid = checkValidity(updatedFormElement.value, updatedFormElement.validation);
-        }
-        updatedAuthForm[inputIdentifier] = updatedFormElement;
+
+        const updatedFormElement = updateObject(this.state.authForm[inputIdentifier], {
+            value: e.target.value,
+            valid: checkValidity(e.target.value, this.state.authForm[inputIdentifier].validation),
+            touched: true
+        });
+        const updatedAuthForm = updateObject(this.state.authForm, {
+            [inputIdentifier]: updatedFormElement
+        });
+
         const formIsValid = checkFormIsInvalid(updatedAuthForm);
 
         this.setState({

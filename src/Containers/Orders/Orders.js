@@ -5,7 +5,7 @@ import axios from '../../axios-orders';
 import Order from '../../Components/Order/Order';
 import Spinner from '../../Components/UI/Spinner/Spinner';
 import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
-import * as actions from '../../store/actions/index';
+import * as actions from '../../store/actions';
 
 class Orders extends Component {
 

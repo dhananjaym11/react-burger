@@ -7,9 +7,9 @@ import classes from './ContactData.css';
 import Spinner from '../UI/Spinner/Spinner';
 import Input from '../UI/Input/Input';
 import inputConfig from './inputConfig';
-import * as orderActions from '../../store/actions/index';
+import * as actions from '../../store/actions';
 import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
-import { checkValidity, checkFormIsInvalid } from '../../config/utility';
+import { checkValidity, checkFormIsInvalid, updateObject } from '../../config/utility';
 
 class ContactData extends Component {
     state = {
@@ -18,7 +18,7 @@ class ContactData extends Component {
             street: inputConfig('input', 'text', 'Enter Street', '', { required: true }, false, false),
             zipCode: inputConfig('input', 'text', 'Enter Zipcode', '', { required: true, minLength: 5 }, false, false),
             country: inputConfig('input', 'text', 'Enter Country', '', { required: true }, false, false),
-            email: inputConfig('input', 'email', 'Enter Email', '', { required: true }, false, false),
+            email: inputConfig('input', 'email', 'Enter Email', '', { required: true, isEmail: true }, false, false),
             deliveryMethod: inputConfig('select', [
                 { value: 'fastest', displayValue: 'Fastest' },
                 { value: 'cheapest', displayValue: 'Cheapest' }
@@ -43,14 +43,16 @@ class ContactData extends Component {
     }
 
     changeHandler = (e, inputIdentifier) => {
-        const updatedOrderForm = { ...this.state.orderForm };
-        const updatedFormElement = { ...updatedOrderForm[inputIdentifier] };
-        updatedFormElement.value = e.target.value;
-        updatedFormElement.touched = true;
-        if (updatedFormElement.validation) {
-            updatedFormElement.valid = checkValidity(updatedFormElement.value, updatedFormElement.validation);
-        }
-        updatedOrderForm[inputIdentifier] = updatedFormElement;
+
+        const updatedFormElement = updateObject(this.state.orderForm[inputIdentifier], {
+            value: e.target.value,
+            valid: checkValidity(e.target.value, this.state.orderForm[inputIdentifier].validation),
+            touched: true
+        });
+        const updatedOrderForm = updateObject(this.state.orderForm, {
+            [inputIdentifier]: updatedFormElement
+        });
+
         const formIsValid = checkFormIsInvalid(updatedOrderForm);
 
         this.setState({
@@ -104,7 +106,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onPurchaseBurger: (orderData, token) => dispatch(orderActions.purchaseBurger(orderData, token))
+        onPurchaseBurger: (orderData, token) => dispatch(actions.purchaseBurger(orderData, token))
     }
 }
 
